@@ -1,12 +1,18 @@
-package tbb.apps.JScraper;
+// Name: Michael Amyotte
+// Date: 6/13/25
+// Purpose: Generic configuration lobby to read settings from JSON file
+
+
+package tbb.utils.Config;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import tbb.utils.Logger.LogLevel;
+import tbb.utils.Logger.Logger;
 
 
 public class Configurator {
@@ -17,10 +23,9 @@ public class Configurator {
 	private ConfigPayload data = null;
 	
 	
-	
+	// do not touch
 	public Configurator(Logger log) throws IOException {
 		this.log = log;
-		
 		
 		ObjectMapper om = new ObjectMapper();
 		if (!Files.exists(filepath)) {
@@ -34,6 +39,7 @@ public class Configurator {
 		}
 	}
 	
+	// do not touch
 	void makeDefaultFile(ObjectMapper om) {
 		log.Write(LogLevel.INFO, "Falling back to default configuration file");
 		ConfigPayload defaultPayload = new ConfigPayload();
@@ -42,28 +48,11 @@ public class Configurator {
 			String jsonStr = om.writeValueAsString(defaultPayload);
 			Files.writeString(filepath, jsonStr);
 		} catch (Exception e) {
-			this.log.Write(LogLevel.ERROR, "Could not make default config.json file!");
+			log.Write(LogLevel.ERROR, "Could not make default config.json file!");
 		}
 	}
 
 	public ConfigPayload getData() {
 		return data;
-	}
-}
-
-class ConfigPayload extends JsonFactory {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	public String[] hosts = new String[0];
-	
-	public ConfigPayload() {
-		super();
-	}
-	public ConfigPayload(ArrayList<String> hosts) {
-		super();
-		this.hosts = hosts.toArray(new String[0]);
 	}
 }

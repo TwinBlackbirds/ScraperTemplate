@@ -17,6 +17,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.base.Strings;
 
+import tbb.utils.Config.Configurator;
+import tbb.utils.Logger.LogLevel;
+import tbb.utils.Logger.Logger;
+
 public class App 
 {
 	// TODO: change debugMode to program argument eventually

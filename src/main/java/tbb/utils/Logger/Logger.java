@@ -1,4 +1,8 @@
-package tbb.apps.JScraper;
+// Name: Michael Amyotte
+// Date: 6/13/25
+// Purpose: Generic logging utility library
+
+package tbb.utils.Logger;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,12 +13,14 @@ import java.time.format.DateTimeFormatter;
 public class Logger {
 	private boolean enableDebugMessages = false;
 	
+	public Logger() { }
+	
 	public Logger(boolean debugMode) {
 		this.enableDebugMessages = debugMode;
 	}
 
 	// generic logging function
-	void Write(LogLevel severity, String msg) {
+	public void Write(LogLevel severity, String msg) {
 		String ldt = LocalDateTime.now()
 				.format(
 						DateTimeFormatter.ofPattern("HH:mm:ss")
@@ -36,8 +42,8 @@ public class Logger {
 		}
 	}
 	
-	// dump stack trace to file
-	void Dump(Exception e) {
+	// dump stack trace to file (for severe failures)
+	public void Dump(Exception e) {
 		Path pa = Paths.get("log.txt");
 		if (Files.exists(pa)) {
 			try {
