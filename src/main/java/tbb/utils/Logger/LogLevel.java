@@ -8,5 +8,5 @@ public enum LogLevel {
 	DBG,
 	INFO,
 	WARN,
-	ERROR
+	ERROR,	
 }

@@ -24,7 +24,7 @@ import tbb.utils.Logger.Logger;
 public class App 
 {
 	// TODO: change debugMode to program argument eventually
-	private static Logger log = new Logger(true);
+	private static Logger log = new Logger(LogLevel.ERROR);
 	private static ChromeDriver cd;
 	private static String[] hosts = new String[0];
 	
@@ -61,6 +61,9 @@ public class App
     	log.Write(LogLevel.INFO, "Closing Chrome browser");
         // close browser + all tabs
         cd.quit();
+        
+        log.close();
+        System.out.println("Process terminated with return code 0");
     }
     
     static void search() {
@@ -100,7 +103,7 @@ public class App
         		System.out.flush();
         		System.out.print(String.format("You want the book ( %s )? [y/N]: ", input));
         		String confirm = s.nextLine();
-        		if (confirm.strip().toLowerCase().equals("y")) {
+        		if (confirm.trim().toLowerCase().equals("y")) {
         			break;
         		}
         	}

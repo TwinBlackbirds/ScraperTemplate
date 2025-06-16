@@ -1,7 +1,11 @@
 package tbb.db.test.Driver;
 
 import tbb.db.Driver.Sqlite;
+import tbb.db.Schema.Channel;
 import tbb.utils.Logger.Logger;
+
+import java.time.LocalDateTime;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -34,6 +38,19 @@ public class DriverTest extends TestCase
     {
     	Logger log = new Logger();
     	Sqlite sql = new Sqlite(log);
-        assertTrue( sql.isConnected );
+    	assertTrue(sql != null);
+    	Channel c = new Channel();
+    	c.setID("ID1");
+    	c.setName("name1");
+    	c.setSubscriberCount(0);
+    	c.setChecked(LocalDateTime.now());
+    	try {
+
+        	sql.writeChannel(c);
+        	assertTrue(true);
+    	} catch (Exception e) {
+    		System.out.println("Could not write channel! " + e);
+    		assertTrue(false);
+    	}
     }
 }

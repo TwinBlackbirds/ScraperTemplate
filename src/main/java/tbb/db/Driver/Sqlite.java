@@ -1,3 +1,7 @@
+// Name: Michael Amyotte
+// Date: 6/16/25
+// Purpose: SQLite ORM example driver for JScraper template
+
 package tbb.db.Driver;
 
 // database table objects
@@ -5,45 +9,36 @@ import tbb.db.Schema.Channel;
 import tbb.utils.Logger.LogLevel;
 import tbb.utils.Logger.Logger;
 
-/*
- * Third party libraries
- */
-import org.sqlite.JDBC;
-import org.sqlite.SQLiteConnection;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+
 
 
 public class Sqlite {
 	private static Logger log;
-	private static final String loc = "database.db";
-	public boolean isConnected = false;
-	public SQLiteConnection db = null;
+	public static final SessionFactory db;
 	
+	static {
+		Configuration config = new Configuration().configure();
+		// debug
+		// System.out.println("Dialect = " + config.getProperty("hibernate.dialect"));
+		db = config.buildSessionFactory();
+	}
 	
 	public Sqlite(Logger log) {
 		this.log = log;
-		// create db file if it doesnt exist
-		
-		// initialize database
-		db_connect();
-		// create tables
-		
-	}
-	private void db_connect() {
-		try {
-			SQLiteConnection sqlite = JDBC.createConnection(loc, null);
-			this.db = sqlite;
-			this.isConnected = true;
-		} catch (Exception e) {
-			log.Write(LogLevel.ERROR, "Could not connect to database!");
-			this.db = null;
-			this.isConnected = false;
-		}
 	}
 	
-	public void connect() {
-		if (this.isConnected) {
-			return;
+	// example write method
+	public void writeChannel(Channel c) throws Exception {
+		try (Session s = db.openSession()){ // try-with-resources
+			Transaction t = s.beginTransaction();
+			s.persist(c);
+			t.commit();
+		} catch (Exception e) {
+			log.Write(LogLevel.ERROR, "WriteChannel operation failed! " + e);
 		}
-		db_connect();
 	}
 }

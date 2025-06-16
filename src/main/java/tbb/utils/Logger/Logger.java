@@ -4,19 +4,23 @@
 
 package tbb.utils.Logger;
 
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
-public class Logger {
-	private boolean enableDebugMessages = false;
+public class Logger implements AutoCloseable {
+	private LogLevel minLevel = null;
+	
+	private ArrayList<String> Stack = new ArrayList<String>();
 	
 	public Logger() { }
 	
-	public Logger(boolean debugMode) {
-		this.enableDebugMessages = debugMode;
+	public Logger(LogLevel minLevel) {
+		this.minLevel = minLevel;
 	}
 
 	// generic logging function
@@ -28,7 +32,7 @@ public class Logger {
 		String severityMsg = "";
 		switch (severity) {
 		case DBG:
-			if (enableDebugMessages) { severityMsg = "DEBUG"; } break;
+			severityMsg = "DEBUG"; break;
 		case INFO:
 			severityMsg = "INFO"; break;
 		case WARN:
@@ -36,15 +40,33 @@ public class Logger {
 		default:
 			severityMsg = "ERROR"; break;
 		}
-		if (severityMsg != "") { // skip debug messages if they are not enabled
-			System.out.println(String.format("[ %s ] (%s): %s", ldt, severityMsg, msg));
-		    	
+		String log = String.format("[ %s ] (%s): %s", ldt, severityMsg, msg);
+		if (severity.compareTo(minLevel) >= 0) { // only print messages at or above minLevel
+			System.out.println(log);
 		}
+		Stack.add(log);
 	}
 	
+	// dump stack trace to file 
+		public void Dump() {
+			Path pa = Paths.get("log.txt");
+			if (Files.exists(pa)) {
+				try {
+					Files.delete(pa);	
+				} catch (Exception ex) { /* swallow */ };
+			}
+			StringBuilder s = new StringBuilder();
+			for (String el : Stack) {
+				s.append(el.toString()).append("\n");
+			}
+			try {
+				Files.writeString(pa, s.toString());
+			} catch (Exception ex) { /* swallow */}
+		}
+		
 	// dump stack trace to file (for severe failures)
 	public void Dump(Exception e) {
-		Path pa = Paths.get("log.txt");
+		Path pa = Paths.get("exception_log.txt");
 		if (Files.exists(pa)) {
 			try {
 				Files.delete(pa);	
@@ -57,5 +79,11 @@ public class Logger {
 		try {
 			Files.writeString(pa, s.toString());
 		} catch (Exception ex) { /* swallow */}
+	}
+
+	@Override
+	public void close() {
+		Write(LogLevel.DBG, "Dumping log to file");
+		this.Dump();
 	}
 }

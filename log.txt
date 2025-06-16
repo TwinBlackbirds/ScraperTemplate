@@ -1,0 +1,6 @@
+[ 10:54:54 ] (INFO): Number of hosts: 2
+[ 10:54:54 ] (DEBUG): Setting Chrome launch options
+[ 10:54:54 ] (DEBUG): Creating default ChromeDriverService
+[ 10:54:54 ] (INFO): Starting Chrome browser
+[ 10:54:56 ] (INFO): Closing Chrome browser
+[ 10:54:57 ] (DEBUG): Dumping log to file

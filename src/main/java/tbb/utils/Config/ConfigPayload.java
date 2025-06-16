@@ -14,12 +14,12 @@ public class ConfigPayload extends JsonFactory {
 	private static final long serialVersionUID = 1L;
 	
 	// your configuration parameters
-	public String[] hosts = new String[0];
+	public String[] hosts;
 	
 	
 	// do not touch
 	public ConfigPayload() {
-		super();
+		this(new ArrayList<String>());
 	}
 	
 	// configure if you'd like
