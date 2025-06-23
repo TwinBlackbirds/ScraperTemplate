@@ -17,6 +17,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.base.Strings;
 
+import tbb.utils.Config.ConfigPayload;
 import tbb.utils.Config.Configurator;
 import tbb.utils.Logger.LogLevel;
 import tbb.utils.Logger.Logger;
@@ -24,26 +25,24 @@ import tbb.utils.Logger.Logger;
 public class App 
 {
 	// TODO: change debugMode to program argument eventually
-	private static Logger log = new Logger(LogLevel.ERROR);
+	private static Logger log = new Logger(LogLevel.INFO);
 	private static ChromeDriver cd;
-	private static String[] hosts = new String[0];
+	
+	private static final ConfigPayload config = new Configurator(log).getData();
 	
     public static void main( String[] args )
     {
-    	// get the list of valid hosts from JSON
-    	try {
-    		Configurator c = new Configurator(log);	
-    		hosts = c.getData().hosts;
-    	} catch (Exception e) {
-    		log.Write(LogLevel.ERROR, "Could not build configurator! Stack trace available in log.txt");
-    		log.Dump(e);
+    	boolean headless = false;
+    	if (config != null) {
+    		headless = config.headless;
     	}
-    	log.Write(LogLevel.INFO, "Number of hosts: " + hosts.length);
+    	
+    	log.Write(LogLevel.INFO, "Headless mode: " + (headless ? "enabled" : "disabled"));
     	
     	// set launch options
 		log.Write(LogLevel.DBG, "Setting Chrome launch options");
     	ChromeOptions co = new ChromeOptions();
-    	co.addArguments("headless");
+    	if (headless) { co.addArguments("headless"); }
     	
     	// point selenium to correct driver
     	log.Write(LogLevel.DBG, "Creating default ChromeDriverService");
@@ -56,7 +55,7 @@ public class App
 
     	// String s = loopUntilInput();
     	
-    	search(); // search(s);    	
+    	bot();	
     	
     	log.Write(LogLevel.INFO, "Closing Chrome browser");
         // close browser + all tabs
@@ -66,13 +65,8 @@ public class App
         System.out.println("Process terminated with return code 0");
     }
     
-    static void search() {
-
-    	Payload p = null;
-    	for (String host : hosts) {
-
-        	
-    	}
+    static void bot() {
+    	
     	
     }
     
@@ -88,20 +82,20 @@ public class App
     	log.Write(LogLevel.INFO, "Page loaded");
     }
     
-    static String loopUntilInput() {
+    static String loopUntilInput(String prompt, String confirmationFmt) {
     	// loop and wait for a valid input from the user (to initiate searching)
     	Scanner s = new Scanner(System.in);
     	String searchTerm = "";
     	try {
     		// read input
     		while (true) {
-        		System.out.print("Enter the name of the book you want: ");
+        		System.out.print(prompt);
         		String input = s.nextLine();
         		if (Strings.isNullOrEmpty(input)) {
         			continue;
         		}
         		System.out.flush();
-        		System.out.print(String.format("You want the book ( %s )? [y/N]: ", input));
+        		System.out.print(String.format(confirmationFmt, input));
         		String confirm = s.nextLine();
         		if (confirm.trim().toLowerCase().equals("y")) {
         			break;
@@ -115,9 +109,6 @@ public class App
     		log.Write(LogLevel.DBG, "Scanner closed");
     	}
     	return searchTerm;
-    }
-    
-    class Payload {
     }
 }
 
