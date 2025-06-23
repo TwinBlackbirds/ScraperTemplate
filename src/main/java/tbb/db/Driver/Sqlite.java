@@ -16,20 +16,26 @@ import org.hibernate.cfg.Configuration;
 
 
 public class Sqlite {
-	private static Logger log;
-	public static final SessionFactory db;
+	private Logger log;
+	private boolean dbg;
+	public SessionFactory db;
 	
-	static {
-		Configuration config = new Configuration()
-								   .configure(); // use hibernate.cfg.xml
-		
-//			System.out.println("Dialect = " + config.getProperty("hibernate.dialect"));	
-		
-		db = config.buildSessionFactory();
+	public Sqlite(Logger log) {
+		this(log, false);
 	}
 	
 	public Sqlite(Logger log, boolean dbg) {
-		Sqlite.log = log;
+		this.log = log;
+		this.dbg = dbg;
+		
+		Configuration config = new Configuration()
+				   .configure(); // use hibernate.cfg.xml
+		
+		if (this.dbg) {
+			System.out.println("Dialect = " + config.getProperty("hibernate.dialect"));	
+		}
+		
+		this.db = config.buildSessionFactory();
 	}
 	
 	// example write method
