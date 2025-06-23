@@ -5,10 +5,6 @@
 package tbb.utils.Config;
 
 public class ConfigPayload {
-
-	// do not remove (I don't know what it does but it is crucial)
-	private static final long serialVersionUID = 1L;
-	
 	// your configuration parameters
 	public boolean headless;
 	
