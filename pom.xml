@@ -54,6 +54,7 @@
 	    <version>7.0.2.Final</version>
 	</dependency>
 	
+	<!-- Hibernate SQLite community JDBC compatibility layer -->
 	<!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-community-dialects -->
 	<dependency>
 	    <groupId>org.hibernate.orm</groupId>
@@ -61,7 +62,50 @@
 	    <version>7.0.2.Final</version>
 	</dependency>
   
-  </dependencies>
   
+  	<!-- 
+		used to take control over Hibernate's logging configuration 
+	-->
+  	<!-- SLF4J API -->
+	<dependency>
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-api</artifactId>
+	    <version>2.0.9</version>
+	</dependency>
+	
+	<!-- 
+		used to take control over Hibernate's logging configuration 
+	-->
+	<!-- Logback classic (the implementation) -->
+	<dependency>
+	    <groupId>ch.qos.logback</groupId>
+	    <artifactId>logback-classic</artifactId>
+	    <version>1.4.11</version>
+	</dependency>
+  </dependencies>
+   <build>
+    	<plugins>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-shade-plugin</artifactId>
+	            <version>3.5.0</version> <!-- check for latest version -->
+	            <executions>
+	                <execution>
+	                    <phase>package</phase>
+	                    <goals>
+	                        <goal>shade</goal>
+	                    </goals>
+	                    <configuration>
+	                        <transformers>
+	                            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+	                                <mainClass>${project.groupId}.${project.name}.App</mainClass>
+	                            </transformer>
+	                        </transformers>
+	                    </configuration>
+	                </execution>
+	            </executions>
+	        </plugin>
+    	</plugins>
+	</build>	
   
 </project>
