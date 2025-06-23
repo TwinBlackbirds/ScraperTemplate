@@ -18,7 +18,7 @@ import org.hibernate.cfg.Configuration;
 public class Sqlite {
 	private Logger log;
 	private boolean dbg;
-	public SessionFactory db;
+	private SessionFactory db; // do not expose to users, instead write methods such as the writeChannel one below
 	
 	public Sqlite(Logger log) {
 		this(log, false);
