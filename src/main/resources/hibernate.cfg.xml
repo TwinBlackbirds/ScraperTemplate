@@ -16,17 +16,18 @@
     <property name="hibernate.hbm2ddl.auto">update</property>
 
     <!-- Debugging SQL -->
-    <property name="hibernate.show_sql">true</property>
-    <property name="hibernate.format_sql">true</property>
+    <property name="hibernate.show_sql">false</property>
+    <property name="hibernate.format_sql">false</property>
 
     <!-- Optional: JDBC connection pool -->
-    <property name="hibernate.connection.pool_size">1</property>
+    <property name="hibernate.connection.pool_size">10</property>
 
     <!-- Optional: Disable second-level cache (safe for testing) -->
     <property name="hibernate.cache.use_second_level_cache">false</property>
 
     <!-- Add mapped entity classes here -->
-    <!-- Example: <mapping class="tbb.db.Channel"/> -->
-	<mapping class="tbb.db.Schema.Channel"></mapping>
+    <!-- Example: -->
+    <mapping class="tbb.db.Schema.Channel"></mapping>
+	
   </session-factory>
 </hibernate-configuration>
