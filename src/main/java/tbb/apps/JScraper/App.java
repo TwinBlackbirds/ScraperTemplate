@@ -1,6 +1,6 @@
 // Scraper Template  Application
 // Author: Michael Amyotte (twinblackbirds)
-// Date: 6/12/25
+// Date: 6/23/25
 // Purpose: Template for Java web scraper applications
 // 
 
@@ -13,10 +13,12 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.google.common.base.Strings;
 
+import tbb.db.Driver.Sqlite;
 import tbb.utils.Config.ConfigPayload;
 import tbb.utils.Config.Configurator;
 import tbb.utils.Logger.LogLevel;
@@ -27,6 +29,14 @@ public class App
 	// configuration
 	private static Logger log = new Logger(LogLevel.ERROR); // min log level
 	private static final ConfigPayload config = new Configurator(log).getData();
+	
+	// consts
+	private static final int MAX_RETRIES = 3; // if page fails to load (cd.get())
+	private static final int TIMEOUT_SEC = 30; // time to wait for el to be present
+	private static final int EXTRA_WAIT_MS = 1000; // extra time spent waiting after el is present
+	
+	// db
+	private static Sqlite sql = new Sqlite(log);
 	
 	// selenium browser tools
 	private static ChromeDriver cd;
@@ -40,7 +50,7 @@ public class App
     		headless = config.headless;
     	}
     	
-    	log.Write(LogLevel.INFO, "Headless mode: " + (headless ? "enabled" : "disabled"));
+    	log.Write(LogLevel.BYPASS, "Headless mode: " + (headless ? "enabled" : "disabled"));
     	
     	// set launch options
 		log.Write(LogLevel.DBG, "Setting Chrome launch options");
@@ -57,11 +67,15 @@ public class App
     	cd = new ChromeDriver(cds, co);
     	js = (JavascriptExecutor) cd;
     	
+    	// end-user feedback
+    	startStatusMessageDaemon();
+    	
     	// String s = loopUntilInput();
     	try {
-    		while (true) {
+    		// only enable while loop once you are confident in the bot's abilities
+//    		while (true) {
             	bot();		
-    		}
+//    		}
     	} catch (Exception e) {
     		log.Write(LogLevel.ERROR, "Bot failed! " + e);
     	} finally {
@@ -76,7 +90,8 @@ public class App
     }
     
     static void bot() throws Exception {
-    	
+    	// example DB method to be called here
+//    	sql.writeChannel(null);
     	
     }
     
@@ -120,5 +135,64 @@ public class App
     	}
     	return searchTerm;
     }
+    
+    static void startStatusMessageDaemon() {
+    	Thread statusThread = new Thread(() -> {
+    	    char[] spinner = {'|', '/', '-', '\\'};
+    	    int index = 0;
+    	    try {
+    	        while (true) {
+    	            // Clear line manually with carriage return and enough spaces
+    	            System.out.print("\rRunning... " + spinner[index] + "     ");
+    	            System.out.flush();
+
+    	            Thread.sleep(300); // can be configured
+    	            index = (index + 1) % spinner.length;
+    	        }
+    	    } catch (InterruptedException e) {
+    	        System.out.println();
+    	        System.out.println("Spinner stopped.");
+    	    }
+    	});
+
+    	statusThread.setDaemon(true); // set as background thread that runs until main thread stops
+    	statusThread.start();
+    }
+    
+    static void jsClick(WebElement el) {
+    	js.executeScript("arguments[0].click();", el);
+    }
+    
+    static String ensureSchema(String url, boolean giveSchemaBack) {
+    	if (url.startsWith("https://")) {
+    		if (giveSchemaBack) {
+    			return url;
+    		}
+    		return url.replace("https://", "");
+    	} else {
+    		if (giveSchemaBack) {
+    			return "https://" + url;
+    		}
+    		return url;
+    	}
+    }
+    
+    static void waitForElementClickable(String selector) {
+    	new WebDriverWait(cd, Duration.ofSeconds(TIMEOUT_SEC)).until(
+		    ExpectedConditions.elementToBeClickable(By.cssSelector(selector))
+		);
+    	try {
+    		Thread.sleep(EXTRA_WAIT_MS);
+    	} catch (Exception e) { }
+	}
+    
+    static void waitForElementVisible(String selector) {
+    	new WebDriverWait(cd, Duration.ofSeconds(TIMEOUT_SEC)).until(
+		    ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector))
+		);
+    	try {
+    		Thread.sleep(EXTRA_WAIT_MS);
+    	} catch (Exception e) { }
+	}
 }
 
