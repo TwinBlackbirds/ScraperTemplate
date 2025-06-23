@@ -24,11 +24,14 @@ import tbb.utils.Logger.Logger;
 
 public class App 
 {
-	// TODO: change debugMode to program argument eventually
-	private static Logger log = new Logger(LogLevel.INFO);
-	private static ChromeDriver cd;
-	
+	// configuration
+	private static Logger log = new Logger(LogLevel.ERROR); // min log level
 	private static final ConfigPayload config = new Configurator(log).getData();
+	
+	// selenium browser tools
+	private static ChromeDriver cd;
+	private static JavascriptExecutor js; // to execute JS in browser context
+	
 	
     public static void main( String[] args )
     {
@@ -52,20 +55,27 @@ public class App
     	// start driver
     	log.Write(LogLevel.INFO, "Starting Chrome browser");
     	cd = new ChromeDriver(cds, co);
-
+    	js = (JavascriptExecutor) cd;
+    	
     	// String s = loopUntilInput();
-    	
-    	bot();	
-    	
-    	log.Write(LogLevel.INFO, "Closing Chrome browser");
-        // close browser + all tabs
-        cd.quit();
-        
-        log.close();
-        System.out.println("Process terminated with return code 0");
+    	try {
+    		while (true) {
+            	bot();		
+    		}
+    	} catch (Exception e) {
+    		log.Write(LogLevel.ERROR, "Bot failed! " + e);
+    	} finally {
+    		log.Write(LogLevel.INFO, "Closing Chrome browser");
+            // close browser + all tabs
+            cd.quit();
+            // dump logs
+            log.close();
+            System.out.println("Process terminated with return code 0");
+        		
+    	}
     }
     
-    static void bot() {
+    static void bot() throws Exception {
     	
     	
     }
