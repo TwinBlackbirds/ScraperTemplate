@@ -20,9 +20,11 @@ public class Sqlite {
 	public static final SessionFactory db;
 	
 	static {
-		Configuration config = new Configuration().configure();
-		// debug
-		// System.out.println("Dialect = " + config.getProperty("hibernate.dialect"));
+		Configuration config = new Configuration()
+								   .configure(); // use hibernate.cfg.xml
+		
+		log.Write(LogLevel.DBG, "Dialect = " + config.getProperty("hibernate.dialect"));
+		
 		db = config.buildSessionFactory();
 	}
 	
