@@ -11,7 +11,6 @@ import tbb.utils.Logger.Logger;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 
@@ -28,15 +27,15 @@ public class Sqlite {
 	}
 	
 	public Sqlite(Logger log) {
-		this.log = log;
+		Sqlite.log = log;
 	}
 	
 	// example write method
 	public void writeChannel(Channel c) throws Exception {
 		try (Session s = db.openSession()){ // try-with-resources
-			Transaction t = s.beginTransaction();
+			s.beginTransaction();
 			s.persist(c);
-			t.commit();
+			s.getTransaction().commit();
 		} catch (Exception e) {
 			log.Write(LogLevel.ERROR, "WriteChannel operation failed! " + e);
 		}
