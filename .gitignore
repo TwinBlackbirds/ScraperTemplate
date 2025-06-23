@@ -2,3 +2,7 @@
 /database.sqlite
 /log.txt
 /.dbeaver
+/exception_log.txt
+/config.json
+/database.sqlite-shm
+/database.sqlite-wal
