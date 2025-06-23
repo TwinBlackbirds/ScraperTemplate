@@ -5,10 +5,14 @@
 
 package tbb.utils.Config;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tbb.utils.Logger.LogLevel;
@@ -16,15 +20,17 @@ import tbb.utils.Logger.Logger;
 
 
 public class Configurator {
-	// private
+	
 	private final String filepathStr = "config.json";
 	private final Path filepath = Paths.get(filepathStr);
+	
 	private Logger log = null;
+	
 	private ConfigPayload data = null;
 	
 	
 	// do not touch
-	public Configurator(Logger log) throws IOException {
+	public Configurator(Logger log) {
 		this.log = log;
 		
 		ObjectMapper om = new ObjectMapper();
@@ -41,12 +47,9 @@ public class Configurator {
 	
 	// do not touch
 	void makeDefaultFile(ObjectMapper om) {
-		log.Write(LogLevel.INFO, "Falling back to default configuration file");
-		ConfigPayload defaultPayload = new ConfigPayload();
+		log.Write(LogLevel.WARN, "Falling back to default configuration file");
 		try {
-			Files.createFile(filepath);
-			String jsonStr = om.writeValueAsString(defaultPayload);
-			Files.writeString(filepath, jsonStr);
+			om.writeValue(new File(filepathStr), new ConfigPayload());
 		} catch (Exception e) {
 			log.Write(LogLevel.ERROR, "Could not make default config.json file!");
 		}

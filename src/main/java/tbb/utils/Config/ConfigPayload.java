@@ -4,27 +4,20 @@
 
 package tbb.utils.Config;
 
-import java.util.ArrayList;
-
-import com.fasterxml.jackson.core.JsonFactory;
-
-public class ConfigPayload extends JsonFactory {
+public class ConfigPayload {
 
 	// do not remove (I don't know what it does but it is crucial)
 	private static final long serialVersionUID = 1L;
 	
 	// your configuration parameters
-	public String[] hosts;
+	public boolean headless;
 	
 	
-	// do not touch
 	public ConfigPayload() {
-		this(new ArrayList<String>());
+		this(false);
 	}
 	
-	// configure if you'd like
-	public ConfigPayload(ArrayList<String> hosts) {
-		super();
-		this.hosts = hosts.toArray(new String[0]);
+	public ConfigPayload(boolean headless) {
+		this.headless = headless;
 	}
 }
