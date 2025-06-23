@@ -89,14 +89,14 @@ public class App
     	}
     }
     
-    static void bot() throws Exception {
+    private static void bot() throws Exception {
     	// example DB method to be called here
 //    	sql.writeChannel(null);
     	
     }
     
     // queries the page every second until the DOM reports readyState = complete
-    static void waitUntilPageLoaded() {
+    private static void waitUntilPageLoaded() {
     	String pageName = cd.getTitle();
     	log.Write(LogLevel.INFO, String.format("Waiting for page '%s' to load", pageName));
     	new WebDriverWait(cd, Duration.ofSeconds(1)).until(
@@ -107,7 +107,7 @@ public class App
     	log.Write(LogLevel.INFO, "Page loaded");
     }
     
-    static String loopUntilInput(String prompt, String confirmationFmt) {
+    private static String loopUntilInput(String prompt, String confirmationFmt) {
     	// loop and wait for a valid input from the user (to initiate searching)
     	Scanner s = new Scanner(System.in);
     	String searchTerm = "";
@@ -136,7 +136,7 @@ public class App
     	return searchTerm;
     }
     
-    static void startStatusMessageDaemon() {
+    private static void startStatusMessageDaemon() {
     	Thread statusThread = new Thread(() -> {
     	    char[] spinner = {'|', '/', '-', '\\'};
     	    int index = 0;
@@ -159,11 +159,11 @@ public class App
     	statusThread.start();
     }
     
-    static void jsClick(WebElement el) {
+    private static void jsClick(WebElement el) {
     	js.executeScript("arguments[0].click();", el);
     }
     
-    static String ensureSchema(String url, boolean giveSchemaBack) {
+    private static String ensureSchema(String url, boolean giveSchemaBack) {
     	if (url.startsWith("https://")) {
     		if (giveSchemaBack) {
     			return url;
@@ -177,7 +177,7 @@ public class App
     	}
     }
     
-    static void waitForElementClickable(String selector) {
+    private static void waitForElementClickable(String selector) {
     	new WebDriverWait(cd, Duration.ofSeconds(TIMEOUT_SEC)).until(
 		    ExpectedConditions.elementToBeClickable(By.cssSelector(selector))
 		);
@@ -186,7 +186,7 @@ public class App
     	} catch (Exception e) { }
 	}
     
-    static void waitForElementVisible(String selector) {
+    private static void waitForElementVisible(String selector) {
     	new WebDriverWait(cd, Duration.ofSeconds(TIMEOUT_SEC)).until(
 		    ExpectedConditions.visibilityOfElementLocated(By.cssSelector(selector))
 		);
