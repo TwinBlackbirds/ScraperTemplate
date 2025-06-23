@@ -16,7 +16,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.google.common.base.Strings;
 
 import tbb.db.Driver.Sqlite;
 import tbb.utils.Config.ConfigPayload;
@@ -116,7 +115,7 @@ public class App
     		while (true) {
         		System.out.print(prompt);
         		String input = s.nextLine();
-        		if (Strings.isNullOrEmpty(input)) {
+        		if (input == null || input.trim().equals("")) {
         			continue;
         		}
         		System.out.flush();
