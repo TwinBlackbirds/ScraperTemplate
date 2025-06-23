@@ -37,11 +37,13 @@ public class Logger implements AutoCloseable {
 			severityMsg = "INFO"; break;
 		case WARN:
 			severityMsg = "WARN"; break;
-		default:
+		case ERROR:
 			severityMsg = "ERROR"; break;
+		default:
+			severityMsg = "SYSTEM"; break;
 		}
 		String log = String.format("[ %s ] (%s): %s", ldt, severityMsg, msg);
-		if (severity.compareTo(minLevel) >= 0) { // only print messages at or above minLevel
+		if (severity.compareTo(minLevel) >= 0 || severity == LogLevel.BYPASS) { // only print messages at or above minLevel
 			System.out.println(log);
 		}
 		Stack.add(log);
