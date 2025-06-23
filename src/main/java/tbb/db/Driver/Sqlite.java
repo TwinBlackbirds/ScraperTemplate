@@ -23,12 +23,12 @@ public class Sqlite {
 		Configuration config = new Configuration()
 								   .configure(); // use hibernate.cfg.xml
 		
-		log.Write(LogLevel.DBG, "Dialect = " + config.getProperty("hibernate.dialect"));
+//			System.out.println("Dialect = " + config.getProperty("hibernate.dialect"));	
 		
 		db = config.buildSessionFactory();
 	}
 	
-	public Sqlite(Logger log) {
+	public Sqlite(Logger log, boolean dbg) {
 		Sqlite.log = log;
 	}
 	
