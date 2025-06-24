@@ -9,6 +9,10 @@ import tbb.db.Schema.Channel;
 import tbb.utils.Logger.LogLevel;
 import tbb.utils.Logger.Logger;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -17,23 +21,32 @@ import org.hibernate.cfg.Configuration;
 
 public class Sqlite {
 	private Logger log;
-	private boolean dbg;
 	private SessionFactory db; // do not expose to users, instead write methods such as the writeChannel one below
 	
 	public Sqlite(Logger log) {
 		this(log, false);
 	}
 	
-	public Sqlite(Logger log, boolean dbg) {
+	public Sqlite(Logger log, boolean deleteDB) {
 		this.log = log;
-		this.dbg = dbg;
 		
 		Configuration config = new Configuration()
 				   .configure(); // use hibernate.cfg.xml
 		
-		if (this.dbg) {
-			System.out.println("Dialect = " + config.getProperty("hibernate.dialect"));	
+		// debug feature
+		if (deleteDB) {
+			try {
+				log.Write(LogLevel.BYPASS, "DEBUG ALERT: Deleting database");
+				Files.deleteIfExists(Paths.get("./database.sqlite"));
+				
+			} catch (IOException e) { 
+				log.Write(LogLevel.BYPASS, "Could not delete database! " + e);
+			}		
+			
 		}
+		
+		log.Write(LogLevel.DBG, "Dialect = " + config.getProperty("hibernate.dialect"));	
+		
 		
 		this.db = config.buildSessionFactory();
 	}
