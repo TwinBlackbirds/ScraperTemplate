@@ -98,7 +98,7 @@ public class App
     private static void waitUntilPageLoaded() {
     	String pageName = cd.getTitle();
     	log.Write(LogLevel.INFO, String.format("Waiting for page '%s' to load", pageName));
-    	new WebDriverWait(cd, Duration.ofSeconds(1)).until(
+    	new WebDriverWait(cd, Duration.ofSeconds(TIMEOUT_SEC)).until(
                 webDriver -> ((JavascriptExecutor) webDriver)
                     .executeScript("return document.readyState")
                     .equals("complete")
